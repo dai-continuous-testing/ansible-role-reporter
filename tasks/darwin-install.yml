@@ -106,6 +106,7 @@
   lineinfile:
     path: "{{ installation_folder }}/config/application.properties"
     line: "server.port={{ server_port }}"
+    regexp: '^server\.port='
   become: yes
 
 - name: set permissions for logs folder
