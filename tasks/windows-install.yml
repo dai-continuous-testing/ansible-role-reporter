@@ -85,7 +85,6 @@
     src: "{{ temp_folder }}\\{{ installer_file_name }}"
     dest: "{{ installation_folder }}"
     remote_src: yes
-    creates: "{{ installation_folder }}"
   become: yes
 
 - name: copy start script
