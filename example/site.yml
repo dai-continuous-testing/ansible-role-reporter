@@ -1,20 +1,11 @@
 
-- hosts: localhost
+- hosts: reporters
 
-  # pre_tasks:
+  pre_tasks:
     
-  #   # windows installation requires nssm
-  #   - win_chocolatey: name=jdk8
-  #     when: ansible_os_family == "Windows"
+    # windows installation requires nssm
+    - win_chocolatey: name=jdk8
+      when: ansible_os_family == "Windows"
 
-  # roles:
-  #   - role: reporter
-
-  tasks:
-    - name: Find /var/log files equal or greater than 10 megabytes ending with .old or .log.gz
-      find:
-        paths: "{{ installation_folder }}/logs"
-        patterns: 'manager-*.jar'
-      register: find_file
-
-    - debug: var=find_file.files[0].path
+  roles:
+    - role: reporter
