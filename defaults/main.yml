@@ -7,6 +7,10 @@ main_class: "com.experitest.manager.Application"
 server_port: 8080
 jmx_port: 51234
 
+db_connection_string: "jdbc:postgresql://localhost:5432/reporter"
+db_username: postgres
+db_password: ""
+
 start_after_install: True
 
 clear_temp_folder: False

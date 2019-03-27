@@ -1,4 +1,5 @@
-java -cp ".;.\lib\*" ^
+java -jar {{ fat_jar_file_name }} ^
+    -Djava.library.path=.;bin; ^
     -Xmx2048m ^
     -XX:HeapDumpPath=.\logs ^
     -XX:+HeapDumpOnOutOfMemoryError ^
@@ -13,6 +14,4 @@ java -cp ".;.\lib\*" ^
     -Dcom.sun.management.jmxremote.port={{ jmx_port }} ^
     -Dcom.sun.management.jmxremote.local.only=true ^
     -Dcom.sun.management.jmxremote.authenticate=false ^
-    -Dcom.sun.management.jmxremote.ssl=false ^
-    -Djava.library.path=.;bin; ^
-    {{ main_class }}
+    -Dcom.sun.management.jmxremote.ssl=false
