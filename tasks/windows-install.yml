@@ -153,8 +153,10 @@
     application: "{{ installation_folder }}\\{{ launcher_file_name }}"
     stdout_file: "{{ installation_folder }}\\logs\\server.out.log"
     stderr_file: "{{ installation_folder }}\\logs\\server.err.log"
-    state: "{{ (start_after_install is defined and start_after_install == True) | ternary('restarted', 'stopped')  }}"
+    state: present
   become: yes
+  notify:
+    - start the service
 
 # clear temp files (optional)
 
