@@ -4,8 +4,8 @@ app_name: reporter
 service_name: "com.experitest.{{ app_name }}"
 main_class: "com.experitest.manager.Application"
 
-server_port: 8080
-jmx_port: 51234
+server_port: 8084
+jmx_port: 51238
 
 db_connection_string: "jdbc:postgresql://localhost:5432/reporter"
 db_username: postgres
