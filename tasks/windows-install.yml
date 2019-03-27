@@ -96,7 +96,7 @@
 
 - name: save fatjar path
   set_fact:
-    fat_jar_file_name: find_fat_jar.files[0].path
+    fat_jar_file_name: "{{ find_fat_jar.files[0].path }}"
 
 - name: copy start script
   win_template:
