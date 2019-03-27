@@ -17,6 +17,9 @@ Role Variables
 | state | should the application be present or absent | present, absent | present | no |
 | app_version | application version to install | string | 12.4.838 | no |
 | server_port | port number for the server | number | 8080 | no |
+| db_connection_string | connection string to postgres | string |  | yes |
+| db_username | username for db connection | string | postgres | no |
+| db_password | password for db connection | string |  | yes |
 | installation_folder | the folder in which the applction will be installed | string | for mac: ~/experitest/reporter-version <br> for windows: C:\\Experitest\\reporter  | no |
 | jmx_port | port number for jmx inspection | number | 51234 | no |
 | custom_download_url | custom url to download the installation from (zip format) | string |  | no |

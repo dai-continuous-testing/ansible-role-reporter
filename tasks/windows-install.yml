@@ -16,6 +16,9 @@
   - installer_file_name
   - s3_download_url
   - launcher_file_name
+  - db_connection_string
+  - db_username
+  - db_password
 
 # required dependencies
 
@@ -109,8 +112,26 @@
 - name: update application properties file
   win_lineinfile:
     path: "{{ installation_folder }}\\config\\application.properties"
-    line: "server.port={{ server_port }}"
-    regexp: '^server\.port='
+    line: "{{ item.key }}={{ item.value }}"
+    regexp: "{{ item.regexp }}"
+  with_items:
+    
+    - key: server.port
+      value: "{{ server_port }}"
+      regexp: '^server\.port='
+    
+    - key: spring.datasource.url
+      value: "{{ db_connection_string }}"
+      regexp: '^spring\.datasource\.url='
+    
+    - key: spring.datasource.username
+      value: "{{ db_username }}"
+      regexp: '^spring\.datasource\.username='
+    
+    - key: spring.datasource.password
+      value: "{{ db_password }}"
+      regexp: '^spring\.datasource\.password='
+    
   become: yes
 
 - name: set permissions for logs folder
