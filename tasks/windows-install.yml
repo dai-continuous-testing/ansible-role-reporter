@@ -163,3 +163,13 @@
     path: "{{ temp_folder }}"
     state: absent
   when: clear_temp_folder == True
+
+# expose role output
+
+- name: expose role output
+  set_fact:
+    "{{ role_name }}":
+      server_port: "{{ server_port }}"
+      jmx_port: "{{ jmx_port }}"
+      installation_folder: "{{ installation_folder }}"
+      configuration_file: "{{ installation_folder }}\\config\\application.properties"
