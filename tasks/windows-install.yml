@@ -18,7 +18,6 @@
   - launcher_file_name
   - db_connection_string
   - db_username
-  - db_password
 
 # required dependencies
 
