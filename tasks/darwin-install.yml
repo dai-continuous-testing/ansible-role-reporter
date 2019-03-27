@@ -178,4 +178,4 @@
       server_port: "{{ server_port }}"
       jmx_port: "{{ jmx_port }}"
       installation_folder: "{{ installation_folder }}"
-      configuration_file: "{{ installation_folder }}\\config\\application.properties"
+      configuration_file: "{{ installation_folder }}/config/application.properties"
