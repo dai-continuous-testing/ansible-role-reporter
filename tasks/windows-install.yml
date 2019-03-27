@@ -166,9 +166,13 @@
 
 # expose role output
 
+- name: sanitize role name
+  set_fact:
+    sanitize_role_name: "{{ role_name | replace('-', '_') | regex_replace('([^A-Za-z0-9_])', '') | trim }}"
+
 - name: expose role output
   set_fact:
-    "{{ role_name }}":
+    "{{ sanitize_role_name }}":
       server_port: "{{ server_port }}"
       jmx_port: "{{ jmx_port }}"
       installation_folder: "{{ installation_folder }}"
