@@ -123,24 +123,20 @@
   lineinfile:
     path: "{{ installation_folder }}/config/application.properties"
     line: "{{ item.key }}={{ item.value }}"
-    regexp: "{{ item.regexp }}"
+    regexp: "^{{ item.key | replace('.', '\\.') }}="
   with_items:
     
     - key: server.port
       value: "{{ server_port }}"
-      regexp: '^server\.port='
     
     - key: spring.datasource.url
       value: "{{ db_connection_string }}"
-      regexp: '^spring\.datasource\.url='
     
     - key: spring.datasource.username
       value: "{{ db_username }}"
-      regexp: '^spring\.datasource\.username='
     
     - key: spring.datasource.password
       value: "{{ db_password }}"
-      regexp: '^spring\.datasource\.password='
     
   become: yes
 
