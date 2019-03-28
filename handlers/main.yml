@@ -1,19 +1,4 @@
 
 - name: start the service
-  block:
-
-    - name: start the service (windows)
-      win_nssm: 
-        name: "{{ service_name }}"
-        application: "{{ installation_folder }}\\{{ launcher_file_name }}"
-        stdout_file: "{{ installation_folder }}\\logs\\server.out.log"
-        stderr_file: "{{ installation_folder }}\\logs\\server.err.log"
-        state: started
-      when: ansible_os_family == 'Windows'
-
-    - name: start the service (darwin)
-      command: "launchctl load {{ service_plist_file_path }}"
-      when: ansible_os_family == 'Darwin'
-
+  include: handlers/start-service.yml
   when: "{{ start_after_install | default(false) | bool }}"
-  become: yes
