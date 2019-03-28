@@ -136,7 +136,7 @@
   lineinfile:
     path: "{{ installation_folder }}/config/application.properties"
     line: "{{ item.key }}={{ item.value }}"
-    regexp: "^{{ item.key }}="
+    regexp: "^{{ item.key | replace('.', '\\.') }}="
   with_dict: "{{ extra_app_props | default({}) }}"
   become: yes
 
