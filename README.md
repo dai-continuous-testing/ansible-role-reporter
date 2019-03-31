@@ -21,7 +21,7 @@ Role Variables
 | db_connection_string | connection string to postgres | string | jdbc:postgresql://localhost:5432/reporter | no |
 | db_username | username for db connection | string | postgres | no |
 | db_password | password for db connection | string |  | no |
-| installation_folder | the folder in which the applction will be installed | string | for mac: ~/experitest/reporter-version <br> for windows: C:\\Experitest\\reporter  | no |
+| installation_folder | the folder in which the applction will be installed | string | for mac: ~/experitest/reporter-version <br> for windows: C:\\Experitest\\reporter-version  | no |
 | jmx_port | port number for jmx inspection | number | 51238 | no |
 | custom_download_url | custom url to download the installation from (zip format) | string |  | no |
 | start_after_install | should application start after installation is completed | boolean | True | no |
