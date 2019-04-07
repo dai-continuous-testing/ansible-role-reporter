@@ -18,6 +18,7 @@ Role Variables
 | app_version | application version to install | string | 12.4.838 | no |
 | server_port | port number for the server | number | 8084 | no |
 | extra_application_properties | additional props to be override in application.properties file | dict | {} | no |
+| extra_java_options | extand java options | array of strings | [] | no |
 | db_connection_string | connection string to postgres | string | jdbc:postgresql://localhost:5432/reporter | no |
 | db_username | username for db connection | string | postgres | no |
 | db_password | password for db connection | string |  | no |

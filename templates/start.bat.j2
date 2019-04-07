@@ -1,4 +1,5 @@
 java -jar {{ fat_jar_file_name }} ^
+    {{ extra_java_options | join(' ') }} ^
     -Djava.library.path=.;bin; ^
     -Xmx2048m ^
     -XX:HeapDumpPath=.\logs ^
