@@ -97,17 +97,6 @@
     remote_src: yes
   become: yes
 
-# REMOVEME fix when zip will not contain fat jar 
-- name: find fat jar file in folder
-  win_find:
-    paths: "{{ installation_folder }}/libs"
-    patterns: 'manager-*.jar'
-  register: find_fat_jar
-
-- name: save fatjar path
-  set_fact:
-    fat_jar_file_name: "{{ find_fat_jar.files[0].path }}"
-
 - name: copy start script
   win_template:
     src: start.bat.j2
