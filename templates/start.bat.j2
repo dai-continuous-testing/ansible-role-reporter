@@ -1,6 +1,5 @@
 
 java -cp ".;.\libs\*" ^
-    {{ extra_java_options | join(' ') }} ^
     -Xmx2048m ^
     -XX:HeapDumpPath=.\logs ^
     -XX:+HeapDumpOnOutOfMemoryError ^
@@ -17,4 +16,5 @@ java -cp ".;.\libs\*" ^
     -Dcom.sun.management.jmxremote.authenticate=false ^
     -Dcom.sun.management.jmxremote.ssl=false ^
     -Djava.library.path=.;bin; ^
+    {{ extra_java_options | join(' ') }} ^
     {{ main_class }}
