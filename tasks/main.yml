@@ -2,10 +2,10 @@
 
 - name: gather os specific variables
   include_vars: 
-    file: "{{ ansible_os_family | lower }}.yml"
+    file: "{{ ansible_os_family | os_family_to_os_type }}.yml"
 
 - name: install
-  include_tasks: "tasks/{{ ansible_os_family | lower }}-install.yml"
+  include_tasks: "tasks/{{ ansible_os_family | os_family_to_os_type }}-install.yml"
   when: state|default('present') == 'present'
 
 - name: track versions
@@ -17,5 +17,5 @@
   when: state|default('present') == 'present'
 
 - name: uninstall
-  include_tasks: "tasks/{{ ansible_os_family | lower }}-uninstall.yml"
+  include_tasks: "tasks/{{ ansible_os_family | os_family_to_os_type }}-uninstall.yml"
   when: state|default('present') == 'absent'
