@@ -21,6 +21,7 @@ base_application_properties:
   - "spring.datasource.username": "{{ db_username | default('postgres') }}"
   - "spring.datasource.password": "{{ db_password }}"
   - "spring.datasource.driver-class-name": "org.postgresql.Driver"
+  - "reports-upload-dir-path" : "C:/ProgramData/Experitest/Reporter/uploads"
 
 extra_application_properties: {}
 
