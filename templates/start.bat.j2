@@ -2,6 +2,7 @@
 java -cp ".;.\libs\*" ^
     -Xmx2048m ^
     -XX:HeapDumpPath=.\logs ^
+    -Dfile.encoding=UTF8 ^
     -XX:+HeapDumpOnOutOfMemoryError ^
     -XX:NativeMemoryTracking=detail ^
     -XX:+UnlockDiagnosticVMOptions ^
