@@ -10,7 +10,7 @@ required_modifiable_fields:
   - db_password
 
 app_name: reporter
-__app_version: 12.6.1126
+__app_version: 12.7.1175
 
 service_name: "com.experitest.{{ app_name }}"
 main_class: "com.experitest.manager.Application"
