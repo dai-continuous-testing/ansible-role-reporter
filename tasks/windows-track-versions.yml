@@ -29,15 +29,34 @@
 #   when: 
 #     - current_exists.stat.exists
 
+- name: print current version
+  debug:
+    msg: "{{ current_file['content']|b64decode }}"
+
 - name: move current to be previous
-  win_copy: 
+  win_copy:
     dest: "{{ installation_root_folder }}\\{{ app_name }}-previous"
     content: "{{ current_file['content']|b64decode }}"
   when: 
     - current_exists.stat.exists
     - current_file['content']|b64decode != app_version
 
+- name: print new app version
+  debug:
+    var: app_version
+
 - name: update current version with new version
-  win_copy: 
+  win_copy:
     dest: "{{ installation_root_folder }}\\{{ app_name }}-current"
     content: "{{ app_version }}"
+
+- name: load the new current version from file
+  slurp:
+    src: "{{ installation_root_folder }}/{{ app_name }}-current"
+  register: current_read
+
+- name: print new current version in file
+  debug:
+    msg: "{{ current_read['content']|b64decode }}"
+
+
