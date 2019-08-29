@@ -32,6 +32,8 @@
 - name: print current version
   debug:
     msg: "{{ current_file['content']|b64decode }}"
+  when: 
+    - current_exists.stat.exists
 
 - name: move current to be previous
   win_copy:
