@@ -37,10 +37,20 @@
     state: present
   become: yes
 
+# disable selinux and firewalld
+
 - name: disable selinux
   selinux:
     state: disabled
   become: yes
+
+- name: stop and disable firewall
+  systemd:
+    name: "{{ item }}"
+    state: stopped
+    enabled: no
+  with_items:
+    - firewalld
 
 # set temp folder
 
