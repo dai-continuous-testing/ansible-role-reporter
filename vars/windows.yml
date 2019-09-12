@@ -12,3 +12,11 @@ installer_file_name: "dist-Windows-REPORTER-{{ app_version }}.zip"
 relative_path: "reporter/windows"
 
 launcher_file_name: "start.bat"
+
+java_download_filename: "jre{{ java_version }}-windows-x64.zip"
+
+java_relative_path: "java/windows"
+
+java_installation_folder: "{{ installation_root_folder }}\\jre"
+
+java_bin: "{{ java_installation_folder }}\\jre{{ java_version }}\\bin\\java.exe"

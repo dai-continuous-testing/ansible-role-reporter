@@ -8,6 +8,7 @@ required_modifiable_fields:
   - db_connection_string
   - db_username
   - db_password
+  - java_version
 
 app_name: reporter
 __app_version: 12.8.1304
@@ -17,6 +18,8 @@ main_class: "com.experitest.manager.Application"
 
 __server_port: 8084
 __jmx_port: 51238
+
+__java_version: 1.8.0_181
 
 extra_java_options: []
 
@@ -45,6 +48,8 @@ custom_download_url: ""
 
 cdn_name: "devops-artifacts.experitest.com"
 s3_download_url: "https://{{ cdn_name }}/{{ relative_path }}/{{ installer_file_name }}"
+
+java_download_url: "https://{{ cdn_name }}/{{ java_relative_path }}/{{ java_download_filename }}"
 
 #
 
