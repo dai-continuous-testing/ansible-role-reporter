@@ -43,12 +43,13 @@
   selinux:
     state: disabled
   become: yes
-
-- name: stop and disable firewall
+   
+- name: stop and disable firewall     # need to discuss on disabling firewall
   systemd:
     name: "{{ item }}"
     state: stopped
     enabled: no
+  become: yes
   with_items:
     - firewalld
 
