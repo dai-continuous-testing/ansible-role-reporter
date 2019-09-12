@@ -13,6 +13,8 @@ relative_path: "reporter/windows"
 
 launcher_file_name: "start.bat"
 
+reporter_data_folder: "C:/ProgramData/Experitest/Reporter/uploads"
+
 java_download_filename: "jre{{ java_version }}-windows-x64.zip"
 
 java_relative_path: "java/windows"
