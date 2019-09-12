@@ -44,12 +44,13 @@
     state: disabled
   become: yes
    
-- name: stop and disable firewall     # need to discuss on disabling firewall
+- name: stop and disable firewall     ## need to discuss on disabling firewall service
   systemd:
     name: "{{ item }}"
     state: stopped
     enabled: no
   become: yes
+  ignore_errors: yes
   with_items:
     - firewalld
 
