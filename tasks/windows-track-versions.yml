@@ -57,7 +57,7 @@
     src: "{{ installation_root_folder }}/{{ app_name }}-current"
   register: current_read
 
-- name: print new current version in file
+- name: "print new current version from {{ app_name }}-current file"
   debug:
     msg: "{{ current_read['content']|b64decode }}"
 

@@ -5,7 +5,6 @@
   assert: { that: "{{ item }} != '' " }
   with_items:
   - app_name
-  - temp_folder
   - clear_temp_folder
   - service_name
   - main_class
@@ -13,7 +12,9 @@
   - clear_before_install
   - server_port
   - jmx_port
+  - service_file_path
   - installer_file_name
+  - ansible_user_id
   - s3_download_url
   - launcher_file_name
   - db_connection_string
@@ -24,53 +25,52 @@
 
 # required dependencies
 
-- name: install Chocolatey
-  win_chocolatey:
-    name: chocolatey
-    state: latest
+- name: make sure rsync is installed
+  package:
+    name: rsync
+    state: present
+  become: yes
 
-- name: disable enhanced exit codes
-  win_chocolatey_feature:
-    name: useEnhancedExitCodes
-    state: disabled
-
-- name: install nssm dependency
-  win_chocolatey:
-    name: nssm
+- name: make sure unzip is installed
+  package:
+    name: unzip
+    state: present
+  become: yes
 
 # set temp folder
 
-- name: make sure temp folder exists
-  win_file:
+- name: make sure temp folder
+  file:
     path: "{{ temp_folder }}"
     state: directory
+    owner: "{{ ansible_user_id }}"
+  become: yes
 
 # install java dependency
 
 - name: download java from s3 url
-  win_get_url:
+  get_url:
     url: "{{ java_download_url }}"
-    dest: "{{ temp_folder }}\\{{ java_download_filename }}"
+    dest: "{{ temp_folder }}/{{ java_download_filename }}"
     timeout: "{{ download_timeout | default(60) }}"
-    force: no
 
 - name: make sure java installation folder exists
-  win_file:
+  file:
     path: "{{ java_installation_folder }}"
     state: directory
+    owner: "{{ ansible_user_id }}"
   become: yes
 
 - name: unzip java file
-  win_unzip:
-    src: "{{ temp_folder }}\\{{ java_download_filename }}"
-    dest: "{{ java_installation_folder }}"
-    remote_src: yes
+  command: "tar -xzvf {{ temp_folder }}/{{ java_download_filename }} -C {{ java_installation_folder }}"
+  args:
     creates: "{{ java_bin }}"
   become: yes
 
 - name: make sure java is installed on the machine
-  win_command: "{{ java_bin }} -version"
+  command: "{{ java_bin }} -version"
   register: java_test
+  become: yes
   ignore_errors: yes
 
 - name: fail if java is not found
@@ -81,100 +81,103 @@
 # download the file
 
 - name: download zip from s3 url
-  win_get_url:
+  get_url:
     url: "{{ s3_download_url }}"
-    dest: "{{ temp_folder }}\\{{ installer_file_name }}"
+    dest: "{{ temp_folder }}/{{ installer_file_name }}"
     timeout: "{{ download_timeout | default(60) }}"
-    force: no
   when: custom_download_url == ""
 
 - name: download zip from custom url
-  win_get_url:
+  get_url:
     url: "{{ custom_download_url }}"
-    dest: "{{ temp_folder }}\\{{ installer_file_name }}"
+    dest: "{{ temp_folder }}/{{ installer_file_name }}"
     timeout: "{{ download_timeout | default(60) }}"
-    force: no
   when: custom_download_url != ""
 
 # stop old service
 
 - name: stop the old service
-  win_nssm:
+  systemd:
     name: "{{ service_name }}"
-    state: absent
+    state: stopped
+  ignore_errors: yes
   become: yes
 
 # delete old installation (optional)
 
 - name: clear old installation folder
-  win_file: 
+  file: 
     path: "{{ installation_folder }}"
     state: absent
   when: clear_before_install == True
 
-# unpack all the files to the installation folder
+# unpack and copy all the files to the installation folder
 
 - name: make sure installation folder exists
-  win_file:
+  file:
     path: "{{ installation_folder }}"
     state: directory
+    owner: "{{ ansible_user_id }}"
   become: yes
 
 - name: unzip the file
-  win_unzip:
-    src: "{{ temp_folder }}\\{{ installer_file_name }}"
+  unarchive:
+    src: "{{ temp_folder }}/{{ installer_file_name }}"
     dest: "{{ installation_folder }}"
     remote_src: yes
+    owner: "{{ ansible_user_id }}"
+    exclude:
+      - "*.bat"
+      - "*.exe"
+  become: yes
+  notify:
+    - start the service
+
+- name: copy service file
+  template:
+    src: linux.service.j2
+    dest: "{{ service_file_path }}"
   become: yes
 
 - name: copy start script
-  win_template:
-    src: start.bat.j2
-    dest: "{{ installation_folder }}\\{{ launcher_file_name }}"
+  template:
+    src: start.sh.j2
+    dest: "{{ installation_folder }}/{{ launcher_file_name }}"
+    mode: 0777
+    owner: "{{ ansible_user_id }}"
   become: yes
 
 # configure installed 
 
 - name: update application properties file
-  win_lineinfile:
-    path: "{{ installation_folder }}\\config\\application.properties"
+  lineinfile:
+    path: "{{ installation_folder }}/config/application.properties"
     line: "{{ item.key }}={{ item.value }}"
     regexp: "^{{ item.key | replace('.', '\\.') }}="
   with_dict: "{{ application_properties }}"
   become: yes
 
 - name: set permissions for logs folder
-  win_file:
-    path: "{{ installation_folder }}\\logs"
+  file:
+    path: "{{ installation_folder }}/logs"
     state: directory
+    mode: 0777
+    owner: "{{ ansible_user_id }}"
   become: yes
 
-- name: update java path in reporter-backup.bat file
-  win_lineinfile:
-    path: "{{ installation_folder }}\\reporter-backup.bat"
-    line: "{{ java_bin }} ^"
+- name: update java path in reporter-backup file
+  lineinfile:
+    path: "{{ installation_folder }}/reporter-backup"
+    line: "{{ java_bin }} \\"
     regexp: "^java"
     mode: '0777'
   become: yes
 
 - name: reset pairing key
-  win_file:
-    path: "{{ installation_folder }}\\config\\pairing.conf.xml"
+  file:
+    path: "{{ installation_folder }}/config/pairing.conf.xml"
     state: absent
   become: yes
-
-# install the service
-
-- name: create the service
-  win_nssm:
-    name: "{{ service_name }}"
-    application: "{{ installation_folder }}\\{{ launcher_file_name }}"
-    stdout_file: "{{ installation_folder }}\\logs\\server.out.log"
-    stderr_file: "{{ installation_folder }}\\logs\\server.err.log"
-    state: present
-  become: yes
-  notify:
-    - start the service
 
 # expose role output
 
@@ -188,4 +191,4 @@
       server_port: "{{ server_port }}"
       jmx_port: "{{ jmx_port }}"
       installation_folder: "{{ installation_folder }}"
-      configuration_file: "{{ installation_folder }}\\config\\application.properties"
+      configuration_file: "{{ installation_folder }}/config/application.properties"
