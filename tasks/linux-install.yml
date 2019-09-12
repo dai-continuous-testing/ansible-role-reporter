@@ -152,7 +152,7 @@
 
 - name: copy service file
   template:
-    src: linux.service.j2
+    src: systemd.service.j2
     dest: "{{ service_file_path }}"
   become: yes
 
