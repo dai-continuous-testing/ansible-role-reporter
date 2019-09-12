@@ -149,6 +149,14 @@
     state: directory
   become: yes
 
+- name: update java path in reporter-backup.bat file
+  win_lineinfile:
+    path: "{{ installation_folder }}\\reporter-backup.bat"
+    line: "{{ java_bin }} ^"
+    regexp: "^java"
+    mode: '0777'
+  become: yes
+
 - name: reset pairing key
   win_file:
     path: "{{ installation_folder }}\\config\\pairing.conf.xml"

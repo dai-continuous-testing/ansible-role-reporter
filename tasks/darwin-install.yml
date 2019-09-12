@@ -149,6 +149,14 @@
     owner: "{{ ansible_user_id }}"
   become: yes
 
+- name: update java path in reporter-backup file
+  lineinfile:
+    path: "{{ installation_folder }}/reporter-backup"
+    line: "{{ java_bin }} \\"
+    regexp: "^java"
+    mode: '0777'
+  become: yes
+
 - name: reset pairing key
   file:
     path: "{{ installation_folder }}/config/pairing.conf.xml"

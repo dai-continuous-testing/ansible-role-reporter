@@ -168,7 +168,7 @@
 - name: update java path in reporter-backup file
   lineinfile:
     path: "{{ installation_folder }}/reporter-backup"
-    line: "{{ java_bin }} \ "
+    line: "{{ java_bin }} \\"
     regexp: "^java"
     mode: '0777'
   become: yes
