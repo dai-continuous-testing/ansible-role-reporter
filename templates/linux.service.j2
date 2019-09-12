@@ -1,0 +1,13 @@
+# Systemd unit file for reporter service
+[Unit]
+Description=Reporter Service
+
+[Service]
+ExecStart={{ installation_folder }}/{{ launcher_file_name }}
+ExecStop=/bin/pkill -15 java
+StandardOutput=syslog
+StandardError=syslog
+WorkingDirectory={{ installation_folder }}
+
+[Install]
+WantedBy=multi-user.target

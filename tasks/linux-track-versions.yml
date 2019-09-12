@@ -1,0 +1,58 @@
+---
+
+# validation
+
+- name: assert all vars are set
+  assert: { that: "{{ item }} != '' " }
+  with_items:
+  - installation_root_folder
+  - app_name
+  - app_version
+
+# 
+
+- name: test for current installation version
+  stat:
+    path: "{{ installation_root_folder }}/{{ app_name }}-current"
+  register: current_exists
+
+- name: load current_version from remote file
+  slurp:
+    src: "{{ installation_root_folder }}/{{ app_name }}-current"
+  register: current_file
+  when: 
+    - current_exists.stat.exists
+
+- name: print current version
+  debug:
+    msg: "{{ current_file['content']|b64decode }}"
+  when: 
+    - current_exists.stat.exists
+
+- name: move current to be previous
+  copy: 
+    dest: "{{ installation_root_folder }}/{{ app_name }}-previous"
+    content: "{{ current_file['content']|b64decode }}"
+  when: 
+    - current_exists.stat.exists
+    - current_file['content']|b64decode != app_version
+  become: yes
+
+- name: print new app version
+  debug:
+    var: app_version
+
+- name: update current version with new version
+  copy: 
+    dest: "{{ installation_root_folder }}/{{ app_name }}-current"
+    content: "{{ app_version }}"
+  become: yes
+
+- name: load the new current version from file
+  slurp:
+    src: "{{ installation_root_folder }}/{{ app_name }}-current"
+  register: current_read
+
+- name: "print new current version from {{ app_name }}-current file"
+  debug:
+    msg: "{{ current_read['content']|b64decode }}"

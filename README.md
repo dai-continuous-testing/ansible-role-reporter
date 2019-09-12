@@ -1,13 +1,13 @@
 Experitest - Reporter ansible role
 =========
 
-This role will install \ uninstall reporter for windows hosts
+This role will install \ uninstall reporter for windows / mac / linux hosts
 
 Requirements
 ------------
 
-This role assumes that you have java 8 installed on the instance
-Supports mac os hosts only.
+This role assumes that you have postgresql server installed on the instance
+Supports windows, mac and linux os hosts.
 
 Role Variables
 --------------
@@ -22,7 +22,7 @@ Role Variables
 | db_connection_string | connection string to postgres | string | jdbc:postgresql://localhost:5432/reporter | no |
 | db_username | username for db connection | string | postgres | no |
 | db_password | password for db connection | string |  | yes |
-| installation_folder | the folder in which the applction will be installed | string | for mac: /Applications/Experitest/reporter-version <br> for windows: C:\\Experitest\\reporter-version  | no |
+| installation_folder | the folder in which the applction will be installed | string | for mac: /Applications/Experitest/reporter-version <br> for windows: C:\\Experitest\\reporter-version <br> for linux: /opt/Experitest/reporter-version | no |
 | jmx_port | port number for jmx inspection | number | 51238 | no |
 | java_version | java jre version to install | string | 1.8.0_181 | no |
 | custom_download_url | custom url to download the installation from (zip format) | string |  | no |
