@@ -37,6 +37,11 @@
     state: present
   become: yes
 
+- name: disable selinux
+  selinux:
+    state: disabled
+  become: yes
+
 # set temp folder
 
 - name: make sure temp folder
