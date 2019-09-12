@@ -5,9 +5,9 @@ __installation_folder: "{{ installation_root_folder }}/{{ app_name }}-{{ app_ver
 
 temp_folder: "/var/tmp/Experitest"
 
-service_name: "{{ app_name }}"
+service_name: "{{ app_name }}.service"
 
-service_file_path: "/etc/systemd/system/{{ service_name }}.service"
+service_file_path: "/etc/systemd/system/{{ service_name }}"
 
 # the windows zip supports on linux platform
 installer_file_name: "dist-Windows-REPORTER-{{ app_version }}.zip"
