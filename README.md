@@ -6,8 +6,7 @@ This role will install \ uninstall reporter for windows / mac / linux hosts
 Requirements
 ------------
 
-This role assumes that you have postgresql server installed on the instance
-Supports windows, mac and linux os hosts.
+This role assumes that you have postgresql server installed.
 
 Role Variables
 --------------
