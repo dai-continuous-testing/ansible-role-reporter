@@ -15,7 +15,7 @@ relative_path: "reporter/windows"
 
 launcher_file_name: "start.sh"
 
-reporter_data_folder: "/var/lib/Experitest/{{ app_name }}"
+reporter_data_folder: "/var/lib/Experitest/{{ app_name }}/uploads"
 
 java_download_filename: "jre{{ java_version }}-linux-x64.tar.gz"
 

@@ -15,7 +15,7 @@ relative_path: "reporter/osx"
 
 launcher_file_name: "start.sh"
 
-reporter_data_folder: "/Library/Application Support/Experitest/file-storage"
+reporter_data_folder: "/Library/Application Support/Experitest/{{ app_name }}/uploads"
 
 java_download_filename: "jre{{ java_version }}-macosx-x64.tar.gz"
 
