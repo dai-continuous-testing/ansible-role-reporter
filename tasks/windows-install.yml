@@ -104,6 +104,17 @@
     state: absent
   become: yes
 
+# kill notepadd
+
+- name: kill notepad apps
+  win_shell: "Get-Process {{ item }} -ErrorAction SilentlyContinue | Stop-Process -Force"
+  with_items:
+    - notepad
+    - notepad++
+  become: yes
+  ignore_errors: yes
+  when: kill_notepad == True
+
 # delete old installation (optional)
 
 - name: clear old installation folder
