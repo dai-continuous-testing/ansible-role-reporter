@@ -30,7 +30,7 @@ Role Variables
 | clear_temp_folder | remove temp folder after installation | boolean | False | no |
 | clear_before_install | removing old installation before installing new version | boolean | False | no |
 | reporter_data_folder | the default data folder path for the reporter | string | for mac: /Library/Application Support/Experitest/reporter/uploads <br> for windows: C:\\ProgramData\\Experitest\\Reporter\\uploads <br> for linux: /var/lib/Experitest/reporter/uploads | no |
-| kill_notepad | kill notepad/notepadd++ apps if opened | boolean | False | no |
+| kill_notepad | kill notepad/notepadd++ apps on windows | boolean | False | no |
 
 Example Playbook
 ----------------

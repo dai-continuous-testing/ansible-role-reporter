@@ -43,8 +43,6 @@ start_after_install: True
 clear_temp_folder: False
 clear_before_install: False
 
-kill_notepad: False
-
 custom_download_url: ""
 
 cdn_name: "devops-artifacts.experitest.com"

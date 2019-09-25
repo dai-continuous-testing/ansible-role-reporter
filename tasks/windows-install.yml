@@ -107,11 +107,23 @@
 # kill notepadd
 
 - name: kill notepad apps
-  win_shell: "Get-Process {{ item }} -ErrorAction SilentlyContinue | Stop-Process -Force"
-  with_items:
-    - notepad
-    - notepad++
-  become: yes
+  block:
+    - name: kill notepad
+      win_shell: |
+        taskkill /F /IM notepad.exe
+      register: killnotepad
+      changed_when: killnotepad.rc == 0 and 'The process "notepad.exe" not found.' not in killnotepad.stderr
+      failed_when: killnotepad.rc != 0 and 'The process "notepad.exe" not found.' not in killnotepad.stderr
+      become: yes
+
+    - name: kill notepad++
+      win_shell: |
+        taskkill /F /IM notepad++.exe
+      register: killnotepadplusplus
+      changed_when: killnotepadplusplus.rc == 0 and 'The process "notepad++.exe" not found.' not in killnotepadplusplus.stderr
+      failed_when: killnotepadplusplus.rc != 0 and 'The process "notepad++.exe" not found.' not in killnotepadplusplus.stderr
+      become: yes
+      
   ignore_errors: yes
   when: kill_notepad == True
 
