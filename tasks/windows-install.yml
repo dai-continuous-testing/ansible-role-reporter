@@ -124,8 +124,8 @@
       failed_when: killnotepadplusplus.rc != 0 and 'The process "notepad++.exe" not found.' not in killnotepadplusplus.stderr
       become: yes
       
-  ignore_errors: yes
   when: kill_notepad == True
+  ignore_errors: yes
 
 # delete old installation (optional)
 
