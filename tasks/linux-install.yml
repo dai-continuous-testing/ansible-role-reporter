@@ -12,7 +12,7 @@
   - clear_before_install
   - server_port
   - jmx_port
-  - service_plist_file_path
+  - service_file_path
   - installer_file_name
   - ansible_user_id
   - s3_download_url
@@ -22,6 +22,43 @@
   - db_password
   - application_properties
   - extra_java_options
+
+# required dependencies
+
+- name: make sure epel-release is installed
+  package:
+    name: epel-release
+    state: present
+  become: yes
+
+- name: make sure rsync is installed
+  package:
+    name: rsync
+    state: present
+  become: yes
+
+- name: make sure unzip is installed
+  package:
+    name: unzip
+    state: present
+  become: yes
+
+# disable selinux and firewalld
+
+- name: disable selinux
+  selinux:
+    state: disabled
+  become: yes
+   
+- name: stop and disable firewall     ## need to discuss on disabling firewall service
+  systemd:
+    name: "{{ item }}"
+    state: stopped
+    enabled: no
+  become: yes
+  ignore_errors: yes
+  with_items:
+    - firewalld
 
 # set temp folder
 
@@ -83,7 +120,10 @@
 # stop old service
 
 - name: stop the old service
-  command: "launchctl unload {{ service_plist_file_path }}"
+  systemd:
+    name: "{{ service_name }}"
+    state: stopped
+  ignore_errors: yes
   become: yes
 
 # delete old installation (optional)
@@ -93,8 +133,6 @@
     path: "{{ installation_folder }}"
     state: absent
   when: clear_before_install == True
-  notify:
-    - start the service
 
 # unpack and copy all the files to the installation folder
 
@@ -111,23 +149,24 @@
     dest: "{{ installation_folder }}"
     remote_src: yes
     owner: "{{ ansible_user_id }}"
+    exclude:
+      - "*.bat"
+      - "*.exe"
   become: yes
   notify:
     - start the service
 
-- name: copy plist
+- name: copy service file
   template:
-    src: service.plist.j2
-    dest: "{{ service_plist_file_path }}"
-    # in mac - plist owner is root
-    owner: root
+    src: systemd.service.j2
+    dest: "{{ service_file_path }}"
   become: yes
 
 - name: copy start script
   template:
     src: start.sh.j2
     dest: "{{ installation_folder }}/{{ launcher_file_name }}"
-    mode: 0755
+    mode: 0777
     owner: "{{ ansible_user_id }}"
   become: yes
 

@@ -1,0 +1,26 @@
+---
+
+installation_root_folder: "/opt/Experitest"
+__installation_folder: "{{ installation_root_folder }}/{{ app_name }}-{{ app_version }}"
+
+temp_folder: "/var/tmp/Experitest"
+
+service_name: "{{ app_name }}.service"
+
+service_file_path: "/etc/systemd/system/{{ service_name }}"
+
+# the windows zip supports on linux platform
+installer_file_name: "dist-Windows-REPORTER-{{ app_version }}.zip"
+relative_path: "reporter/windows"
+
+launcher_file_name: "start.sh"
+
+reporter_data_folder: "/var/lib/Experitest/{{ app_name }}/uploads"
+
+java_download_filename: "jre{{ java_version }}-linux-x64.tar.gz"
+
+java_relative_path: "java/linux"
+
+java_installation_folder: "{{ installation_root_folder }}/jre"
+
+java_bin: "{{ java_installation_folder }}/jre{{ java_version }}/bin/java"
