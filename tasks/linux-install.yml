@@ -212,6 +212,7 @@
   set_fact:
     "{{ sanitize_role_name }}":
       server_port: "{{ server_port }}"
+      app_version: "{{ app_version }}"
       jmx_port: "{{ jmx_port }}"
       installation_folder: "{{ installation_folder }}"
       configuration_file: "{{ installation_folder }}/config/application.properties"
