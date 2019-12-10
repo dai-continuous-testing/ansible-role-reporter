@@ -9,9 +9,12 @@ required_modifiable_fields:
   - db_username
   - db_password
   - java_version
+  - installer_checksum
 
 app_name: reporter
-__app_version: 12.10.1587
+__app_version: 12.12.1733
+
+windows_installer_checksum: "31421d13438d575955746105157315c668227519dd32f8a38c468857cd977469"
 
 main_class: "com.experitest.manager.Application"
 
