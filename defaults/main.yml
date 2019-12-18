@@ -11,7 +11,7 @@ required_modifiable_fields:
   - java_version
 
 app_name: reporter
-__app_version: 12.10.1587
+__app_version: 12.12.1733
 
 main_class: "com.experitest.manager.Application"
 
