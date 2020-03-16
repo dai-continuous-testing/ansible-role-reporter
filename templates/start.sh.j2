@@ -10,7 +10,7 @@
 #JAVA_PATH=$(/usr/libexec/java_home -v 1.8)
 JAVA_BIN={{ java_bin }}
 
-$JAVA_BIN -cp ".:libs/*" \
+$JAVA_BIN -cp "libs/*" \
     -Xmx2048m \
     -XX:+HeapDumpOnOutOfMemoryError \
     -XX:HeapDumpPath=./logs \
