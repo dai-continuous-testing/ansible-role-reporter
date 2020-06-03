@@ -2,6 +2,7 @@
 
 __installation_root_folder: "C:\\Experitest"
 installation_folder: "{{ installation_root_folder }}\\{{ app_name }}-{{ app_version }}"
+__shared_storage_folder: ""
 
 temp_folder: "c:\\temp\\experitest"
 
