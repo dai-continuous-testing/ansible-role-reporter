@@ -32,6 +32,8 @@ Role Variables
 | clear_before_install | removing old installation before installing new version | boolean | False | no |
 | reporter_data_folder | the default data folder path for the reporter | string | for mac: /Library/Application Support/Experitest/reporter/uploads <br> for windows: C:\\ProgramData\\Experitest\\Reporter\\uploads <br> for linux: /var/lib/Experitest/reporter/uploads | no |
 | kill_notepad | kill notepad/notepadd++ apps on windows | boolean | False | no |
+| deployment_mode | installation will be online or offline | online, offline | online | no |
+| shared_storage_folder | should be path of your shared storage to copy installers and common packages, when deployment_mode is offline | string | "" | when deployment_mode set to offline |
 
 Example Playbook
 ----------------
