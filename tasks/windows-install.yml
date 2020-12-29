@@ -245,6 +245,10 @@
   ignore_errors: yes
   become: yes
   
+- name: set auto resart on failure of service
+  win_command: "sc failure {{ service_name }} reset=600 actions=restart/15000"
+  become: yes
+
 # expose role output
 
 - name: sanitize role name
