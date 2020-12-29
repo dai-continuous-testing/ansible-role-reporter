@@ -57,4 +57,4 @@ java_download_url: "https://{{ cdn_name }}/{{ java_relative_path }}/{{ java_down
 
 #
 
-health_check_uri: "/actuator/health"
+health_check_uri: "/manage/health"
