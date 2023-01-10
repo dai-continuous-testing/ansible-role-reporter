@@ -22,6 +22,7 @@
   - application_properties
   - extra_java_options
   - kill_notepad
+  - logs_folder
 
 # required dependencies
 
@@ -187,10 +188,20 @@
   with_dict: "{{ application_properties }}"
   become: yes
 
-- name: set permissions for logs folder
+- name: make sure logs folder exists
+  win_file:
+    path: "{{ logs_folder }}"
+    state: directory
+  become: yes
+
+- name: remove existing logs folder from installation folder
   win_file:
     path: "{{ installation_folder }}\\logs"
-    state: directory
+    state: absent
+  become: yes
+
+- name: create sym link for logs folder
+  win_command: "cmd.exe /k mklink /D {{ installation_folder }}\\logs {{ logs_folder }}"
   become: yes
 
 - name: update java path in reporter-backup.bat file
