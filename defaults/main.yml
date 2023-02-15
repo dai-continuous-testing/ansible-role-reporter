@@ -3,7 +3,6 @@
 required_modifiable_fields:
   - app_version
   - server_port
-  - jmx_port
   - installation_root_folder
   - db_connection_string
   - db_username
@@ -13,15 +12,14 @@ required_modifiable_fields:
   - custom_download_password
 
 app_name: reporter
-__app_version: 12.12.1748
+__app_version: 22.3.2889
 
 
 main_class: "com.experitest.manager.Application"
 
 __server_port: 8084
-__jmx_port: 51238
 
-__java_version: 8u292-b10
+__java_version: 17.0.3_7
 
 extra_java_options: []
 
