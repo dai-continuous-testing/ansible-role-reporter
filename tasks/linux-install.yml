@@ -1,8 +1,8 @@
-
 # validation
-
 - name: assert all vars are set
-  assert: { that: "{{ item }} != '' " }
+  assert: 
+    that: "{{ item }} != '' " 
+    quiet: true
   with_items:
   - app_name
   - clear_temp_folder
@@ -101,15 +101,6 @@
     timeout: "{{ download_timeout | default(60) }}"
   when: custom_download_url != ""
 
-# stop old service
-
-- name: stop the old service
-  systemd:
-    name: "{{ service_name }}"
-    state: stopped
-  ignore_errors: yes
-  become: yes
-
 # delete old installation (optional)
 
 - name: clear old installation folder
@@ -137,14 +128,8 @@
       - "*.bat"
       - "*.exe"
   become: yes
-  notify:
-    - start the service
+  
 
-- name: copy service file
-  template:
-    src: systemd.service.j2
-    dest: "{{ service_file_path }}"
-  become: yes
 
 - name: copy start script
   template:
@@ -176,15 +161,6 @@
   file:
     path: "{{ installation_folder }}/logs"
     state: absent
-  become: yes
-
-- name: create sym link for logs folder
-  file:
-    src: "{{ logs_folder }}"
-    dest: "{{ installation_folder }}/logs"
-    state: link
-    mode: 0777
-    owner: "{{ ansible_user_id }}"
   become: yes
 
 - name: update java path in reporter-backup file
@@ -219,17 +195,4 @@
   with_items:
     - "{{ delete_vmoptions.files }}"
 
-# expose role output
 
-- name: sanitize role name
-  set_fact:
-    sanitize_role_name: "{{ role_name | replace('-', '_') | regex_replace('([^A-Za-z0-9_])', '') | trim }}"
-
-- name: expose role output
-  set_fact:
-    "{{ sanitize_role_name }}":
-      server_port: "{{ server_port }}"
-      app_version: "{{ app_version }}"
-      installation_folder: "{{ installation_folder }}"
-      configuration_file: "{{ installation_folder }}/config/application.properties"
-      service_name: "{{ service_name }}"

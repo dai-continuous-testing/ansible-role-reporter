@@ -33,7 +33,8 @@ Role Variables
 | clear_before_install | removing old installation before installing new version | boolean | False | no |
 | reporter_data_folder | the default data folder path for the reporter | string | for mac: /Library/Application Support/Experitest/reporter/uploads <br> for windows: C:\\ProgramData\\Experitest\\Reporter\\uploads <br> for linux: /var/lib/Experitest/reporter/uploads | no |
 | kill_notepad | kill notepad/notepadd++ apps on windows | boolean | False | no |
-
+| download | only download the release version | boolean | True | no |
+| deploy | only deploy the release version | boolean | True | no |
 Example Playbook
 ----------------
 
