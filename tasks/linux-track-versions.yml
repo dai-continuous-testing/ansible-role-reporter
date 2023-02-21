@@ -35,6 +35,9 @@
         src: systemd.service.j2
         dest: "{{ service_file_path }}"
       become: yes
+      
+    - name: notify to start service
+      command: echo "notify to start service..."
       notify:
         - start the service
 
