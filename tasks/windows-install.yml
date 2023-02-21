@@ -12,7 +12,6 @@
   - installation_folder
   - clear_before_install
   - server_port
-  - jmx_port
   - installer_file_name
   - s3_download_url
   - launcher_file_name
@@ -22,6 +21,7 @@
   - application_properties
   - extra_java_options
   - kill_notepad
+  - logs_folder
 
 # required dependencies
 
@@ -187,10 +187,20 @@
   with_dict: "{{ application_properties }}"
   become: yes
 
-- name: set permissions for logs folder
+- name: make sure logs folder exists
+  win_file:
+    path: "{{ logs_folder }}"
+    state: directory
+  become: yes
+
+- name: remove existing logs folder from installation folder
   win_file:
     path: "{{ installation_folder }}\\logs"
-    state: directory
+    state: absent
+  become: yes
+
+- name: create sym link for logs folder
+  win_command: "cmd.exe /k mklink /D {{ installation_folder }}\\logs {{ logs_folder }}"
   become: yes
 
 - name: update java path in reporter-backup.bat file
@@ -260,7 +270,6 @@
     "{{ sanitize_role_name }}":
       server_port: "{{ server_port }}"
       app_version: "{{ app_version }}"
-      jmx_port: "{{ jmx_port }}"
       installation_folder: "{{ installation_folder }}"
       configuration_file: "{{ installation_folder }}\\config\\application.properties"
       service_name: "{{ service_name }}"

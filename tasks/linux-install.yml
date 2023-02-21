@@ -11,7 +11,6 @@
   - installation_folder
   - clear_before_install
   - server_port
-  - jmx_port
   - service_file_path
   - installer_file_name
   - ansible_user_id
@@ -22,6 +21,7 @@
   - db_password
   - application_properties
   - extra_java_options
+  - logs_folder
 
 # required dependencies
 
@@ -164,10 +164,25 @@
   with_dict: "{{ application_properties }}"
   become: yes
 
-- name: set permissions for logs folder
+- name: make sure logs folder exists
+  file:
+    path: "{{ logs_folder }}"
+    state: directory
+    mode: 0777
+    owner: "{{ ansible_user_id }}"
+  become: yes
+
+- name: remove existing logs folder from installation folder
   file:
     path: "{{ installation_folder }}/logs"
-    state: directory
+    state: absent
+  become: yes
+
+- name: create sym link for logs folder
+  file:
+    src: "{{ logs_folder }}"
+    dest: "{{ installation_folder }}/logs"
+    state: link
     mode: 0777
     owner: "{{ ansible_user_id }}"
   become: yes
@@ -215,7 +230,6 @@
     "{{ sanitize_role_name }}":
       server_port: "{{ server_port }}"
       app_version: "{{ app_version }}"
-      jmx_port: "{{ jmx_port }}"
       installation_folder: "{{ installation_folder }}"
       configuration_file: "{{ installation_folder }}/config/application.properties"
       service_name: "{{ service_name }}"
