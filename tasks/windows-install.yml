@@ -184,12 +184,60 @@
 # configure installed 
 
 - name: update application properties file
-  win_lineinfile:
+  dai_continuous_testing.utilities.application_properties:
     path: "{{ installation_folder }}\\config\\application.properties"
-    line: "{{ item.key }}={{ item.value }}"
-    regexp: "^{{ item.key | replace('.', '\\.') }}="
-  with_dict: "{{ application_properties }}"
+    properties: "{{ application_properties }}"
+    backup: yes
+    comment_existing: yes
+    marker: "ANSIBLE MANAGED BLOCK - Application Properties"
   become: yes
+
+- name: verify application properties file exists
+  win_stat:
+    path: "{{ installation_folder }}\\config\\application.properties"
+  register: properties_file_stat
+
+- name: ensure properties file is accessible
+  assert:
+    that:
+      - properties_file_stat.stat.exists
+      - properties_file_stat.stat.readable
+    fail_msg: "Application properties file not found or not readable"
+    success_msg: "Application properties file successfully created/updated"
+
+# Check disk space before installation
+- name: check installation drive disk space
+  dai_continuous_testing.utilities.win_drive_letter_to_disk_info:
+    drive_letter: "{{ installation_folder | win_dirname | win_split | first }}"
+  register: installation_drive_info
+  ignore_errors: yes
+
+- name: display disk space information
+  debug:
+    msg: |
+      Installation Drive Information:
+      Drive: {{ installation_drive_info.drive_letter | default('Unknown') }}
+      {% if installation_drive_info.success | default(false) %}
+      Total Space: {{ (installation_drive_info.disk_info.Size / 1024 / 1024 / 1024) | round(2) }} GB
+      Free Space: {{ (installation_drive_info.disk_info.FreeSpace / 1024 / 1024 / 1024) | round(2) }} GB
+      Used Space: {{ ((installation_drive_info.disk_info.Size - installation_drive_info.disk_info.FreeSpace) / 1024 / 1024 / 1024) | round(2) }} GB
+      File System: {{ installation_drive_info.disk_info.FileSystem }}
+      Volume Label: {{ installation_drive_info.disk_info.VolumeLabel | default('N/A') }}
+      {% else %}
+      Status: Failed to retrieve disk information
+      Error: {{ installation_drive_info.msg | default('Unknown error') }}
+      {% endif %}
+  when: installation_drive_info is defined
+
+- name: warn if disk space is low
+  debug:
+    msg: |
+      WARNING: Low disk space detected!
+      Available: {{ (installation_drive_info.disk_info.FreeSpace / 1024 / 1024 / 1024) | round(2) }} GB
+      Recommendation: Ensure at least 5GB free space for optimal operation.
+  when: 
+    - installation_drive_info.success | default(false)
+    - (installation_drive_info.disk_info.FreeSpace / 1024 / 1024 / 1024) < 5
 
 - name: make sure logs folder exists
   win_file:
@@ -277,3 +325,52 @@
       installation_folder: "{{ installation_folder }}"
       configuration_file: "{{ installation_folder }}\\config\\application.properties"
       service_name: "{{ service_name }}"
+
+# Windows Health check after installation
+- name: verify reporter service health after installation (Windows)
+  dai_continuous_testing.utilities.win_health_check:
+    url: "http://localhost:{{ server_port }}{{ health_check_uri | default('/manage/health') }}"
+    expected_status: 200
+    timeout: 30
+    max_retries: 10
+    delay_between_tries: 5
+    initial_delay: 15
+    headers: '{"Accept": "application/json", "User-Agent": "Ansible-Reporter-HealthCheck-Windows"}'
+  register: reporter_health_check_windows
+  when: start_after_install | default(true)
+  ignore_errors: yes
+
+- name: verify reporter service is listening on port
+  win_wait_for:
+    port: "{{ server_port }}"
+    host: "localhost"
+    timeout: 60
+    delay: 10
+  register: reporter_port_check
+  when: start_after_install | default(true)
+  ignore_errors: yes
+
+- name: display comprehensive Windows health check results
+  debug:
+    msg: |
+      Reporter Windows Health Check Results:
+      =====================================
+      Service Health Check:
+        Status: {{ 'PASSED' if reporter_health_check_windows.success | default(false) else 'FAILED' }}
+        URL: {{ reporter_health_check_windows.url | default('N/A') }}
+        Message: {{ reporter_health_check_windows.msg | default('Health check was not performed') }}
+        
+      Port Availability Check:
+        Status: {{ 'PASSED' if reporter_port_check is success else 'FAILED' }}
+        Port: {{ server_port }}
+        
+      Service Status:
+        Name: {{ service_name }}
+        Installation: {{ installation_folder }}
+        
+      System Information:
+        Drive: {{ installation_drive_info.drive_letter | default('Unknown') }}
+        {% if installation_drive_info.success | default(false) %}
+        Free Space: {{ (installation_drive_info.disk_info.FreeSpace / 1024 / 1024 / 1024) | round(2) }} GB
+        {% endif %}
+  when: reporter_health_check_windows is defined or reporter_port_check is defined

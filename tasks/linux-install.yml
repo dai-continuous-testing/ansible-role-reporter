@@ -104,7 +104,7 @@
 # configure installed 
 
 - name: update application properties file
-  application_properties:
+  dai_continuous_testing.utilities.application_properties:
     path: "{{ installation_folder }}/config/application.properties"
     properties: "{{ application_properties }}"
     backup: yes
@@ -171,5 +171,28 @@
   become: yes
   with_items:
     - "{{ delete_vmoptions.files }}"
+
+# Health check after installation
+- name: verify reporter service health after installation
+  dai_continuous_testing.utilities.health_check:
+    url: "http://localhost:{{ server_port }}{{ health_check_uri | default('/manage/health') }}"
+    expected_status: 200
+    timeout: 30
+    max_retries: 10
+    delay_between_tries: 5
+    initial_delay: 10
+  register: reporter_health_check
+  when: start_after_install | default(true)
+  ignore_errors: yes
+
+- name: display health check results
+  debug:
+    msg: |
+      Reporter Health Check Results:
+      Status: {{ 'PASSED' if reporter_health_check.success | default(false) else 'FAILED' }}
+      URL: {{ reporter_health_check.url | default('N/A') }}
+      Message: {{ reporter_health_check.msg | default('Health check was not performed') }}
+      Attempts: {{ reporter_health_check.failed_attempts | default(0) + 1 if reporter_health_check.failed_attempts is defined else 'N/A' }}
+  when: reporter_health_check is defined
 
 
