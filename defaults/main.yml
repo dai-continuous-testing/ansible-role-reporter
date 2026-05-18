@@ -19,7 +19,7 @@ main_class: "com.experitest.manager.Application"
 
 __server_port: 8084
 
-__java_version: 17.0.3_7
+__java_version: 17.0.18_8
 
 extra_java_options: []
 
