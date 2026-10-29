@@ -12,7 +12,7 @@ required_modifiable_fields:
   - custom_download_password
 
 app_name: reporter
-__app_version: 26.9.4028
+__app_version: 26.9.4041
 
 
 main_class: "com.experitest.manager.Application"
